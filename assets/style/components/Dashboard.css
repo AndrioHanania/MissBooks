@@ -1,0 +1,10 @@
+.dashboard {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.dashboard h1 {
+    font-size: 50px;
+    font-weight: bold;
+}

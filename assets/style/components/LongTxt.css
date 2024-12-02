@@ -1,0 +1,8 @@
+.long-txt p {
+    font-weight: bold;
+}
+
+.long-txt a {
+    color: blue;
+    text-decoration: underline;
+}

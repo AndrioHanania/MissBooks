@@ -1,0 +1,27 @@
+.select-rating {
+    display: flex; 
+    align-items: center;
+    gap: 0.5rem;  
+    padding: 0.5rem;
+}
+
+.select-rate {
+    border: 1px solid black;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.select-rate:hover {
+    border: 2px solid rgb(24, 159, 217);
+    transform: scale(1.1);
+}
+
+.select-rating.disabled .select-rate {
+    cursor: not-allowed;
+}
+
+.select-rating.disabled .select-rate:hover {
+    transform: none;
+    border: 1px solid black;
+}
