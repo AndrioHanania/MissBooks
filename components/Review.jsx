@@ -1,5 +1,4 @@
 import { reviewService } from "../services/review.service.js";
-import { bookReviewService } from "../services/book-review.service.js";
 import { utilService } from "../services/util.service.js";
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js";
 import { RateByFactory } from "./rating/RateByFactory.jsx";
@@ -7,7 +6,7 @@ import { RateByFactory } from "./rating/RateByFactory.jsx";
 const { useEffect, useState } = React;
 
 export function Review({ reviewId, onRemove }) {
-    const [review, setReview] = useState(reviewService.getEmptyReview());
+    const [review, setReview] = useState(reviewService.getEmptyReview(''));
 
     useEffect(() => {
         loadReview();
@@ -51,11 +50,7 @@ export function Review({ reviewId, onRemove }) {
 
     async function onRemoveReview() {
         try{
-            console.log('review.id: ', review.id)
-
-            const bookReview = (await bookReviewService.query({ reviewId: review.id }))[0];
-            console.log('bookReview: ', bookReview)
-            await bookReviewService.remove(bookReview.id);
+            await reviewService.remove(review.id);
             onRemove(bookReview.id);
         }
         catch(err){

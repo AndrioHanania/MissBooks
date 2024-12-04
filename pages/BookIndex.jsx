@@ -2,7 +2,7 @@ import { BookFilter } from "../components/BookFilter.jsx";
 import { BookList } from "../components/BookList.jsx";
 import { bookService } from "../services/book.service.js";
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js";
-import { bookReviewService } from "../services/book-review.service.js";
+import { reviewService } from "../services/review.service.js";
 
 const { Link } = ReactRouterDOM;
 const { useState, useEffect } = React;
@@ -29,7 +29,7 @@ export function BookIndex() {
     async function onRemoveBook(bookId) {
         try{
             await bookService.remove(bookId);
-            await bookReviewService.removeByBookId(bookId);
+            await reviewService.removeByBookId(bookId);
             setBooks(prevBooks => prevBooks.filter(book => book.id !== bookId));
             showSuccessMsg(`Book removed`);
         }

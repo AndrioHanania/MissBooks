@@ -1,7 +1,7 @@
 import { bookService } from "../services/book.service.js";
 import { utilService } from "../services/util.service.js";
 import { LongTxt } from "../components/LongTxt.jsx";
-import { BookReviews } from "../components/BookReviews.jsx"
+import { Reviews } from "../components/Reviews.jsx"
 
 const { useEffect, useState } = React;
 const { useParams, useNavigate, Link } = ReactRouterDOM;
@@ -13,7 +13,8 @@ export function BookDetails() {
 
 
     useEffect(() => {
-        loadBook();
+        if(params.bookId)
+            loadBook();
     }, [params.bookId])
 
     async function loadBook() {
@@ -76,7 +77,7 @@ export function BookDetails() {
             <LongTxt txt={book.description}/>
             {book.listPrice.isOnSale && <p>On Sale</p>}
             <img src={book.thumbnail}/>  
-            <BookReviews bookId={book.id}/>
+            <Reviews bookId={book.id}/>
             <button onClick={onBack}>Back</button>
             <section>
                 <button><Link to={`/book/${book.prevBookId}`}>Prev Book</Link></button>

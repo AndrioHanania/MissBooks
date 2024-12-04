@@ -1,5 +1,4 @@
 import { reviewService } from "../services/review.service.js";
-import { bookReviewService } from "../services/book-review.service.js";
 import { utilService } from "../services/util.service.js";
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js";
 import { ratingMethods, RateByFactory } from './rating/RateByFactory.jsx';
@@ -7,7 +6,7 @@ import { ratingMethods, RateByFactory } from './rating/RateByFactory.jsx';
 const { useState } = React;
 
 export function ReviewAdd({ bookId, onAdd }) {
-    const [reviewToAdd, setReviewToAdd] = useState(reviewService.getEmptyReview());
+    const [reviewToAdd, setReviewToAdd] = useState(reviewService.getEmptyReview(bookId));
     const { fullname, rating, rateBy, readAt } = reviewToAdd;
 
     function handleChange({ target }) {
@@ -45,8 +44,7 @@ export function ReviewAdd({ bookId, onAdd }) {
 
         try{
             const savedReview = await reviewService.save(reviewToAdd);
-            const reviewBook =  await bookReviewService.save({ bookId, reviewId: savedReview.id });
-            onAdd(reviewBook.id, savedReview.id);
+            onAdd(savedReview);
             showSuccessMsg(`Review Saved`);
         }
         catch(err){

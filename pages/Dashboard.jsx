@@ -4,20 +4,14 @@ const { VictoryChart, VictoryAxis, VictoryLabel, VictoryBar } = Victory;
 const { useEffect, useState } = React;
 
 export function Dashboard() {
-    const [categoryPercentage, setCategoryPercentage] = useState({});
-
+    const [chartData, setChartData] = useState([]);
 
     useEffect(() => {
-        fetchCategoryPercentages();
+        fetchChartData();
     }, []);
 
-    useEffect(() => {
-        console.log("categoryPercentage: ", categoryPercentage);
-    }, [categoryPercentage]);
-
-    async function fetchCategoryPercentages() {
-        const percentages = await getBooksPercentageByCategory();
-        setCategoryPercentage(percentages);
+    async function fetchChartData() {
+        setChartData(await getBooksPercentageByCategory());
     }
 
     async function getBooksPercentageByCategory() {
@@ -39,17 +33,19 @@ export function Dashboard() {
                 return percentageMap;
             }, {});
 
-            return categoryPercentage;
+            const newChartData = Object.entries(categoryPercentage).map(([category, percentage]) => ({
+                category,
+                percentage: parseFloat(percentage),
+            }));
+
+            return newChartData;
         } catch (err) {
             console.error("Error calculating books percentage by category:", err);
             return {};
         }
     }
 
-    const ChartData = Object.entries(categoryPercentage).map(([category, percentage]) => ({
-        category,
-        percentage: parseFloat(percentage),
-    }));
+
     
     return (
         <section className="dashboard">
@@ -78,7 +74,7 @@ export function Dashboard() {
                     }}
                 /> 
                 <VictoryBar 
-                    data={ChartData} 
+                    data={chartData} 
                     x="category"
                     y="percentage"
                     barWidth={40}
