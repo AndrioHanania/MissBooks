@@ -13,4 +13,5 @@
     align-items: center;
     background-color: var(--clr1bg);
     border-radius: 0.25em;
+    cursor: pointer;
 }

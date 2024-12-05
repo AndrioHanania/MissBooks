@@ -26,8 +26,8 @@ export function Reviews({ bookId }) {
 
     function onAddReview(savedReview) {
         setReviews(prevReviews => [
-            ...prevReviews,
-            savedReview
+            savedReview,
+            ...prevReviews
         ]);
     }
 

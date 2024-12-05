@@ -21,6 +21,8 @@
 @import "components/LongTxt.css";
 @import "components/Dashboard.css";
 @import "components/ReviewAdd.css";
+@import "components/ReviewList.css";
+@import "components/Review.css";
 
 @import "components/rating/RateByStars.css";
 @import "components/rating/RateBySelect.css";

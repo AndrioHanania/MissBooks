@@ -4,7 +4,6 @@ export const storageService = {
     post,
     put,
     remove,
-    removeIfExist,
 }
 
 function query(entityType, delay = 200) {
@@ -48,16 +47,6 @@ function remove(entityType, entityId) {
         entities.splice(idx, 1)
         _save(entityType, entities)
     })
-}
-
-function removeIfExist(entityType, entityId) {
-    return query(entityType).then(entities => {
-        const idx = entities.findIndex(entity => entity.id === entityId);
-        if (idx >= 0) {
-            entities.splice(idx, 1);
-            _save(entityType, entities);
-        }
-    });
 }
 
 // Private functions

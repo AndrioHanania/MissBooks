@@ -1,13 +1,18 @@
 import { reviewService } from "../services/review.service.js";
+import { userService } from "../services/user.service.js";
 import { utilService } from "../services/util.service.js";
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js";
 import { ratingMethods, RateByFactory } from './rating/RateByFactory.jsx';
+import { ValidationError } from "../errors/ValidationError.js";
 
-const { useState } = React;
+const { useState, useEffect } = React;
 
 export function ReviewAdd({ bookId, onAdd }) {
-    const [reviewToAdd, setReviewToAdd] = useState(reviewService.getEmptyReview(bookId));
-    const { fullname, rating, rateBy, readAt } = reviewToAdd;
+    const [reviewToAdd, setReviewToAdd] = useState(null);
+
+    useEffect(() => {
+        setReviewToAdd(reviewService.getEmptyReview(bookId));
+    }, [bookId]);
 
     function handleChange({ target }) {
         const field = target.name
@@ -43,13 +48,17 @@ export function ReviewAdd({ bookId, onAdd }) {
         ev.preventDefault();
 
         try{
-            const savedReview = await reviewService.save(reviewToAdd);
+            const savedReview = await reviewService.save({...reviewToAdd, fullname: userService.getLoggedinUser().fullname });
             onAdd(savedReview);
             showSuccessMsg(`Review Saved`);
         }
         catch(err){
-            showErrorMsg('Cannot save review');
-            console.log('err:', err);
+            if (err instanceof ValidationError)
+                showErrorMsg(err.message);
+            else
+                showErrorMsg('Cannot save review');
+
+            console.error('err:', err);
         }
     }
 
@@ -57,23 +66,15 @@ export function ReviewAdd({ bookId, onAdd }) {
         setReviewToAdd(prevReviewToAdd => ({ ...prevReviewToAdd, rateBy: method, rating: 0 }));
     };
     
+    if (!reviewToAdd) return <p>Loading...</p>;
+
+    const { rating, rateBy, readAt } = reviewToAdd;
 
     return (
         <section className="review-add">
             <h2 className="review-add-header">Book Rating</h2>
 
             <form className="review-add-form" onSubmit={onSaveReview}>
-                <div>
-                    <label htmlFor="fullname">Fullname:</label>
-                    <input 
-                        onChange={handleChange}
-                        value={fullname}
-                        type="text"
-                        name="fullname"
-                        id="fullname"
-                    />
-                </div>
-
                 <div>
                     <label htmlFor="readAt">Read at:</label>
                     <input 

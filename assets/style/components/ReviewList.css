@@ -1,0 +1,11 @@
+.reviews {
+    padding: 0px;
+    height: 300px;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+.li-review {
+    list-style: none;
+    margin: 5px;
+}

@@ -1,0 +1,16 @@
+.review {
+    display: flex;
+    gap: 20px;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgb(11, 148, 239);
+    border-radius: 8px; 
+    padding: 5px 10px;
+    transition: transform 0.2s ease;
+}
+
+.review:hover {
+    border: 2px solid rgb(11, 148, 239);
+    transform: scale(1.01);
+}

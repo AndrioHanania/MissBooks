@@ -13,6 +13,15 @@ export function BookEdit() {
     const { bookId } = useParams();
     const { title, subtitle, description, authors, listPrice, thumbnail, language, categories, pageCount, publishedDate } = BookToEdit;
     const { amount, currencyCode, isOnSale } = listPrice;
+    const isLoginUserAdmin = userService.isLoginUserAdmin();
+
+    if(!isLoginUserAdmin) {
+        return (
+            <section>
+                <h2>Sorry but only admin users allow to edit books!</h2>
+            </section>
+        );
+    }
 
     useEffect(() => {
         if (bookId) loadBook();

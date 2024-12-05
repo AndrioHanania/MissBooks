@@ -57,6 +57,7 @@ export function SearchBook() {
                         isOnSale: utilService.getRandomBoolean(),
                     },
                     apiId: googleBook.id,
+                    avgRating: 0,
                 };
 
                 await bookService.save(book);

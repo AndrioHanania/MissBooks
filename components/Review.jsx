@@ -2,11 +2,13 @@ import { reviewService } from "../services/review.service.js";
 import { utilService } from "../services/util.service.js";
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js";
 import { RateByFactory } from "./rating/RateByFactory.jsx";
+import { userService } from "../services/user.service.js";
 
 const { useEffect, useState } = React;
 
 export function Review({ reviewId, onRemove }) {
     const [review, setReview] = useState(reviewService.getEmptyReview(''));
+    const [isLoginUserAdminOrOwner, setIsLoginUserAdminOrOwner] = useState(userService.isLoginUserAdmin());
 
     useEffect(() => {
         loadReview();
@@ -14,7 +16,11 @@ export function Review({ reviewId, onRemove }) {
 
     async function loadReview() {
         try{
-            setReview(await reviewService.get(reviewId));
+            const newReview = await reviewService.get(reviewId);
+            const loginUser = userService.getLoggedinUser();
+
+            setReview(newReview);
+            setIsLoginUserAdminOrOwner(prev => prev || newReview.fullname === loginUser.fullname);
         }
         catch(err){
             console.error('Problem getting review', err);
@@ -62,29 +68,24 @@ export function Review({ reviewId, onRemove }) {
     if (!review) return null;
 
     return (
-        <div style={{ display: 'flex', gap: '20px', flexDirection: 'row-reverse', justifyContent: 'space-between', alignItems: 'center', border: '1px solid blue', borderRadius: '8px', padding: '5px 10px' }}>
-            <button 
-                onClick={onRemoveReview}////
-            >
-                x
-            </button>
+        <div className="review">
+            {isLoginUserAdminOrOwner && (<button onClick={onRemoveReview}>x</button>)}
             
             <p style={{ margin: 0 }}>{review.fullname}</p>
 
             <RateByFactory
                 val={review.rating}
-                onChange={onUpdateRate}////
+                onChange={onUpdateRate}
                 type={review.rateBy}
-                isDisabled={true}////
-                //length={5}
+                isDisabled={!isLoginUserAdminOrOwner}
             />
 
             <input
                 id="date-picker"
                 type="date"
                 value={utilService.formatDate(review.readAt)}
-                onChange={onUpdateReadAt}////
-                disabled={true}////
+                onChange={onUpdateReadAt}
+                disabled={!isLoginUserAdminOrOwner}
             />
         </div>
     );

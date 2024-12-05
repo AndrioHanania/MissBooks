@@ -58,8 +58,6 @@ async function query(filterBy = {}) {
                     books = books.filter(book => book.listPrice.amount < filterBy.listPrice.amount);
             }
 
-
-
             if (filterBy.listPrice.currencyCode && filterBy.listPrice.currencyCode != "all") {
                 books = books.filter(book => book.listPrice.currencyCode === filterBy.listPrice.currencyCode);
             }
@@ -109,6 +107,7 @@ function getEmptyBook() {
         publishedDate: '',
         thumbnail: '',
         listPrice: { amount: 0, currencyCode: "USD", isOnSale: false },
+        avgRating: 0,
     };
 }
 
@@ -121,7 +120,8 @@ function getDefaultFilter() {
         page_position: true,
         publish_year: new Date().getFullYear(),
         publish_year_position: false,
-        listPrice: { amount: 0, amount_position: true, currencyCode: "all", sale: "all" }
+        listPrice: { amount: 0, amount_position: true, currencyCode: "all", sale: "all" },
+        // avgRating: 0,
     };
 }
 
@@ -133,6 +133,7 @@ function _createBooks() {
 
 function _createBook(book) {
     book.id = utilService.makeId();
+    book.avgRating = 0;
     return book;
 }
 

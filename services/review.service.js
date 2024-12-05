@@ -1,6 +1,8 @@
 import { utilService } from './util.service.js';
 import { storageService } from './async-storage.service.js';
 import { bookService } from "./book.service.js";
+import { userService } from "./user.service.js";
+import { ValidationError } from "../errors/ValidationError.js";
 
 const REVIEW_KEY = 'reviewDB';
 const RATE_BY_OPTIONS = ['stars', 'select', 'textbox'];
@@ -16,7 +18,6 @@ export const reviewService = {
     query,
     get,
     remove,
-    removeIfExist,
     save,
     getEmptyReview,
     getDefaultFilter,
@@ -26,6 +27,11 @@ export const reviewService = {
 async function query(filterBy = {}) {
     try {
         let reviews = await storageService.query(REVIEW_KEY);
+
+        if (filterBy.txt) {
+            const regExp = new RegExp(filterBy.txt, 'i');
+            reviews = reviews.filter(review => regExp.test(review.fullname));
+        };
 
         if(filterBy.bookId)
             reviews = reviews.filter(review => review.bookId === filterBy.bookId);
@@ -41,12 +47,9 @@ async function get(reviewId) {
     return await storageService.get(REVIEW_KEY, reviewId);
 }
 
-async function remove(reviewId) {
-    return await storageService.remove(REVIEW_KEY, reviewId);
-}
-
-async function removeIfExist(reviewId) {
-    return await storageService.removeIfExist(REVIEW_KEY, reviewId);
+async function remove(reviewId) {    
+    await storageService.remove(REVIEW_KEY, reviewId);
+    _UpdateBookRating(reviewId);
 }
 
 async function removeByBookId(bookId) {
@@ -58,17 +61,24 @@ async function removeByBookId(bookId) {
 }
 
 async function save(review) {
-    if(review.id)
-        return await storageService.put(REVIEW_KEY, review);
+    const reviewForUser = await query({ txt: review.fullname });
+    let res;
 
-    await bookService.get(review.bookId);
-    return await storageService.post(REVIEW_KEY, review);
+    if(reviewForUser && reviewForUser.length > 1)
+        throw new ValidationError("User can't create one review for each book");
+
+    if(review.id)
+        res = await storageService.put(REVIEW_KEY, review);
+    else
+        res = await storageService.post(REVIEW_KEY, review);
+
+    _UpdateBookRating(reviewId);
+    return res;
 }
 
 function getEmptyReview(bookId) {
     return {
         bookId,
-        fullname: '',
         rating: 0,
         rateBy: '',
         readAt: new Date(),
@@ -91,29 +101,49 @@ async function _createReviews() {
     let reviews = utilService.loadFromStorage(REVIEW_KEY);
     if (!reviews || !reviews.length) {
         const books = await bookService.query();
+        const users = await userService.query();
         let reviews = [];
-        let countUsers = 1;
-        let randomReviewsForCurrBook;
 
-        books.forEach(book => {
-            randomReviewsForCurrBook = utilService.getRandomIntInclusive(0, 5);
-
-            for(let i = 0; i <= randomReviewsForCurrBook; i++, countUsers++) {
+        users.forEach(user => {
+            books.forEach(book => {
                 reviews.push({
                     bookId: book.id,
-                    fullname: `user${countUsers}`,
+                    fullname: user.fullname,
                     rating: utilService.getRandomRating(),
                     rateBy: RATE_BY_OPTIONS[utilService.getRandomIntInclusive(0, RATE_BY_OPTIONS.length - 1)],
                     readAt: new Date(Date.now() - utilService.getRandomIntInclusive(0, 14) * 24 * 60 * 60 * 1000),
                 });
-            }
+            });
         });
 
         utilService.saveToStorage(REVIEW_KEY, reviews.map(review => _createReview(review)));
+        _UpdateBooksRating();
     }
 }
 
 function _createReview(review) {
     review.id = utilService.makeId();
     return review;
+}
+
+async function _UpdateBookRating(reviewId) {
+    const review = await get(reviewId);
+    const book = await bookService.get(review.bookId);
+    const bookReviews = await query({ bookId: book.id });
+    let newSumRating = 0;
+    bookReviews.forEach(bookReview => newSumRating += bookReview.rating);
+    book.avgRating = newSumRating / bookReviews.length;
+    bookService.save(book);
+}
+
+async function _UpdateBooksRating() {
+    const books = await bookService.query();
+
+    for (const book of books) {
+        const bookReviews = await query({ bookId: book.id });
+        let newSumRating = 0;
+        bookReviews.forEach(bookReview => newSumRating += bookReview.rating);
+        book.avgRating = bookReviews.length ? newSumRating / bookReviews.length : 0;
+        await bookService.save(book);
+    };
 }
