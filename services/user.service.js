@@ -63,6 +63,7 @@ function getEmptyCredentials() {
 
 function isLoginUserAdmin() {
     const loginUser = getLoggedinUser();
+    if(!loginUser) return false;
     return loginUser.fullname === 'admin';
 }
 
