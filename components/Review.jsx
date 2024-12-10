@@ -20,7 +20,8 @@ export function Review({ reviewId, onRemove }) {
             const loginUser = userService.getLoggedinUser();
 
             setReview(newReview);
-            setIsLoginUserAdminOrOwner(prev => prev || newReview.fullname === loginUser.fullname);
+            if(loginUser)
+                setIsLoginUserAdminOrOwner(prev => prev || newReview.fullname === loginUser.fullname);
         }
         catch(err){
             console.error('Problem getting review', err);
