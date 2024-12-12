@@ -13,9 +13,17 @@ export function BookEdit() {
     const { bookId } = useParams();
     const { title, subtitle, description, authors, listPrice, thumbnail, language, categories, pageCount, publishedDate } = BookToEdit;
     const { amount, currencyCode, isOnSale } = listPrice;
-    const isLoginUserAdmin = userService.isLoginUserAdmin();
+    const [isAdmin, setIsAdmin] = useState(false);
 
-    if(!isLoginUserAdmin) {
+    useEffect(() => {
+        async function checkAdminStatus() {
+            const adminStatus = await userService.isLoginUserAdmin();
+            setIsAdmin(adminStatus);
+        }
+        checkAdminStatus();
+    }, []);
+
+    if(!isAdmin) {
         return (
             <section>
                 <h2>Sorry but only admin users allow to edit books!</h2>

@@ -7,11 +7,19 @@
 }
 
 .book-list li {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    background-color: var(--clr1bg);
     border-radius: 0.25em;
     cursor: pointer;
+}
+
+.sale-icon {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 0;
+    left: 0;
 }

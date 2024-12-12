@@ -8,7 +8,16 @@ const { useEffect, useState } = React;
 
 export function Review({ reviewId, onRemove }) {
     const [review, setReview] = useState(reviewService.getEmptyReview(''));
-    const [isLoginUserAdminOrOwner, setIsLoginUserAdminOrOwner] = useState(userService.isLoginUserAdmin());
+    const [isOwner, setIsOwner] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        async function checkAdminStatus() {
+            const adminStatus = await userService.isLoginUserAdmin();
+            setIsAdmin(adminStatus);
+        }
+        checkAdminStatus();
+    }, []);
 
     useEffect(() => {
         loadReview();
@@ -21,7 +30,7 @@ export function Review({ reviewId, onRemove }) {
 
             setReview(newReview);
             if(loginUser)
-                setIsLoginUserAdminOrOwner(prev => prev || newReview.fullname === loginUser.fullname);
+                setIsOwner(newReview.fullname === loginUser.fullname)
         }
         catch(err){
             console.error('Problem getting review', err);
@@ -68,6 +77,8 @@ export function Review({ reviewId, onRemove }) {
 
     if (!review) return null;
 
+    const isLoginUserAdminOrOwner = isAdmin || isOwner;
+    
     return (
         <div className="review">
             {isLoginUserAdminOrOwner && (<button onClick={onRemoveReview}>x</button>)}
@@ -76,7 +87,7 @@ export function Review({ reviewId, onRemove }) {
 
             <RateByFactory
                 val={review.rating}
-                onChange={onUpdateRate}
+                onSelected={onUpdateRate}
                 type={review.rateBy}
                 isDisabled={!isLoginUserAdminOrOwner}
             />

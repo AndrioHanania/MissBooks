@@ -69,20 +69,26 @@ export function BookDetails() {
     if (!book) return (<div>Details Loading...</div>);
 
     return (
-        <section className="book-details">
-            <h1>Title: {book.title}</h1>
-            <h1 className={getPriceClass(book.listPrice.amount)}>Amount: {book.listPrice.amount} {utilService.currencyCodeToSymbol.get(book.listPrice.currencyCode)}</h1>
-            <StatusReading/>
-            <StatusAge/>
-            <LongTxt txt={book.description}/>
-            {book.listPrice.isOnSale && <p>On Sale</p>}
-            <img src={book.thumbnail}/>  
+        <section className="book-details-index">
+            <div className="book-details-container">
+                <img src={book.thumbnail}/>  
+
+                <div className="book-details">
+                    <h1>Title: {book.title}</h1>
+                    <h1 className={getPriceClass(book.listPrice.amount)}>Amount: {book.listPrice.amount} {utilService.currencyCodeToSymbol.get(book.listPrice.currencyCode)}</h1>
+                    <StatusReading/>
+                    <StatusAge/>
+                    <LongTxt txt={book.description}/>
+                    {book.listPrice.isOnSale && <p>On Sale</p>}
+                </div>
+            </div>
+            
             <Reviews bookId={book.id}/>
             <button onClick={onBack}>Back</button>
             <section>
                 <button><Link to={`/book/${book.prevBookId}`}>Prev Book</Link></button>
                 <button><Link to={`/book/${book.nextBookId}`}>Next Book</Link></button>
-            </section>          
+            </section>
         </section>
     );
 };

@@ -15,6 +15,7 @@ export const userService = {
     query,
     getEmptyCredentials,
     isLoginUserAdmin,
+    isLogin,
 };
 
 async function query() {
@@ -61,10 +62,17 @@ function getEmptyCredentials() {
     };
 }
 
-function isLoginUserAdmin() {
+async function isLoginUserAdmin() {
     const loginUser = getLoggedinUser();
-    if(!loginUser) return false;
-    return loginUser.fullname === 'admin';
+    if(loginUser === null) return false;
+    console.log("what");
+    const user = await getById(loginUser._id);
+    console.log(user);
+    return (await getById(loginUser._id)).isAdmin;
+}
+
+function isLogin() {
+    return !!getLoggedinUser();
 }
 
 function _createUsers(){
@@ -79,6 +87,7 @@ function _createUsers(){
             updatedAt: Date.now(),
             updatedAt:  Date.now(),
             _id: utilService.makeId(),
+            isAdmin: true,
         });
 
         for(let i = 1; i <= 60; i++) {
@@ -89,6 +98,7 @@ function _createUsers(){
                 updatedAt: Date.now(),
                 updatedAt:  Date.now(),
                 _id: utilService.makeId(),
+                isAdmin: false,
             });
         }
 

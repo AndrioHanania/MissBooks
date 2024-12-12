@@ -1,7 +1,9 @@
 .app-header {
     background-color: var(--clr1);
     color: var(--clr2bg-light);
-    
+    position: sticky;
+    top: 0;
+    z-index: 50;
 }
 
 .header-container {
@@ -27,4 +29,8 @@ a.active {
     .app-header {
         color: var(--clr2bg-light);
     }
+}
+
+.logo {
+    width: 100px;
 }

@@ -1,7 +1,7 @@
 import { Toggle } from "./Toggle.jsx";
 import { utilService } from "../services/util.service.js";
 
-const { useState, useEffect, useRef, } = React;
+const { useState, useEffect, useRef } = React;
 const { useSearchParams  } = ReactRouterDOM;
 
 export function BookFilter({ defaultFilter, onSetFilter }) {

@@ -28,12 +28,13 @@ export function AppHeader() {
     return (
         <header className="app-header full main-layout">
             <section className="header-container">
-                <h1>React Book App</h1>
+                <img src='/assets/img/logo.png' alt='logo' className='logo'/>
 
                 <nav className="app-nav">
                     <NavLink to="/home">Home</NavLink>
                     <NavLink to="/about">About</NavLink>
                     <NavLink to="/book" >Book</NavLink>
+                    <NavLink to="/book/search" >Search</NavLink>
                     <NavLink to="/dashboard" >Dashboard</NavLink>
                 </nav>
 

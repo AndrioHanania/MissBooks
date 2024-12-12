@@ -11,7 +11,34 @@
     color: black;
 }
 
-.book-preview img {
-    max-width: 100px;
+.book-preview .book-img {
     border-radius: 0.25em;
+}
+
+.book-preview .book-img:hover {
+    outline: 3px solid rgb(84, 84, 84);
+}
+
+.book-preview h2, h3, h4 {
+    margin: 0;
+}
+
+.book-sales {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    margin-top: 5px;
+}
+
+.book-sale {
+    display: flex;
+}
+
+.book-sale p {
+    margin: 0;
+}
+
+.book-sale img {
+    width: 20px;
+    height: 20px;
 }

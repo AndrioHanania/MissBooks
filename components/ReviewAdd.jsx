@@ -115,7 +115,7 @@ export function ReviewAdd({ bookId, onAdd }) {
                     </div>
                 )}
 
-                <button>Save</button>
+                <button disabled={userService.isLogin()}>Save</button>
             </form>
         </section>
     );

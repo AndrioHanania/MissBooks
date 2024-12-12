@@ -3,6 +3,7 @@ import { BookList } from "../components/BookList.jsx";
 import { bookService } from "../services/book.service.js";
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js";
 import { reviewService } from "../services/review.service.js";
+import { userService } from "../services/user.service.js";
 
 const { Link } = ReactRouterDOM;
 const { useState, useEffect } = React;
@@ -11,6 +12,15 @@ const { useState, useEffect } = React;
 export function BookIndex() {
     const [books, setBooks] = useState([]);
     const [filterBy, setFilterBy] = useState(bookService.getDefaultFilter());
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        async function checkAdminStatus() {
+            const adminStatus = await userService.isLoginUserAdmin();
+            setIsAdmin(adminStatus);
+        }
+        checkAdminStatus();
+    }, []);
 
     useEffect(() => {
         fetchBooks();
@@ -50,9 +60,11 @@ export function BookIndex() {
         <section className="book-index">
             <BookFilter defaultFilter={bookService.getDefaultFilter()} onSetFilter={onSetFilter} />
 
-            <section>
-                <Link to="/book/edit">Add Book</Link>
-            </section>
+            {isAdmin && (
+                <section>
+                    <Link to="/book/edit">Add Book</Link>
+                </section>
+            )}
 
             <BookList
                 books={books}
