@@ -21,7 +21,9 @@ export function BookList({ books, onRemove }) {
         <ul className="book-list">
             {books.map(book =>
                 <li key={book.id} onClick={() => navigate(`/book/${book.id}`)}>
-                    <img className="sale-icon" src="/assets/img/sale-icon.svg" alt="sale-icon"/>
+                    {book.listPrice.isOnSale && (
+                        <img className="sale-icon" src="/assets/img/sale-icon.svg" alt="sale-icon"/>
+                    )}
                     <BookPreview book={book}/>
                     <section>
                         {isAdmin && (<button ><Link to={`/book/edit/${book.id}`}>Edit</Link></button>)}
