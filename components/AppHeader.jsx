@@ -28,7 +28,7 @@ export function AppHeader() {
     return (
         <header className="app-header full main-layout">
             <section className="header-container">
-                <img src='/assets/img/logo.png' alt='logo' className='logo'/>
+                <img src='./assets/img/logo.png' alt='logo' className='logo'/>
 
                 <nav className="app-nav">
                     <NavLink to="/home">Home</NavLink>

@@ -9,7 +9,7 @@ export function BookPreview({ book }) {
             <div className="book-sales">
                 <div>
                     <div className="book-sale">
-                        <img src="/assets/img/phone.svg" alt="phone-icon" />
+                        <img src="./assets/img/phone.svg" alt="phone-icon" />
                         <p>Digital</p>
                     </div>
                     {book.listPrice.amount} {utilService.currencyCodeToSymbol.get(book.listPrice.currencyCode)}
@@ -17,7 +17,7 @@ export function BookPreview({ book }) {
 
                 <div>
                     <div className="book-sale">
-                        <img src="/assets/img/book.svg" alt="book-icon" />
+                        <img src="./assets/img/book.svg" alt="book-icon" />
                         <p>Printed</p>
                     </div>
                     {book.listPrice.amount} {utilService.currencyCodeToSymbol.get(book.listPrice.currencyCode)}

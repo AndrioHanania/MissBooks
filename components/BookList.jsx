@@ -22,7 +22,7 @@ export function BookList({ books, onRemove }) {
             {books.map(book =>
                 <li key={book.id} onClick={() => navigate(`/book/${book.id}`)}>
                     {book.listPrice.isOnSale && (
-                        <img className="sale-icon" src="/assets/img/sale-icon.svg" alt="sale-icon"/>
+                        <img className="sale-icon" src="./assets/img/sale-icon.svg" alt="sale-icon"/>
                     )}
                     <BookPreview book={book}/>
                     <section>
